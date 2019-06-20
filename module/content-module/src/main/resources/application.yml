@@ -6,8 +6,11 @@ spring:
 #Eureka-client 启动端口
 server:
   port: 10022
+  #指定访问项目路径的项目名(不加访问路径是：http://localhost:10022/test/hello)
+  servlet:
+    context-path: /content
 
-#eureka配置
+#eureka-client 配置
 eureka:
   client:
     #eureka-server服务地址(eureka-server项目中)

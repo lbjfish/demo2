@@ -7,7 +7,7 @@ spring:
 server:
   port: 10001
 
-#eureka配置
+#eureka-server配置
 eureka:
   instance:
     #服务地址
