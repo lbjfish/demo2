@@ -1,0 +1,15 @@
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: content-module-lbj
+
+#Eureka-client 启动端口
+server:
+  port: 10022
+
+#eureka配置
+eureka:
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/

@@ -1,0 +1,21 @@
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: eureka-server
+
+#Eureka-Server服务启动端口
+server:
+  port: 10001
+
+#eureka配置
+eureka:
+  instance:
+    #服务地址
+    hostname: localhost
+  client:
+    #因为eureka-server既可以当server也可以当client，设置这两个为false就表明是server
+    fetch-registry: false
+    register-with-eureka: false
+    #服务地址
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
