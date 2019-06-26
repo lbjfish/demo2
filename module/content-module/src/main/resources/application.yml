@@ -1,14 +1,14 @@
-#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
-spring:
-  application:
-    name: content-module-lbj
-
 #Eureka-client 启动端口
 server:
   port: 10022
   #指定访问项目路径的项目名(不加访问路径是：http://localhost:10022/test/hello)
   servlet:
     context-path: /content
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: content-module-lbj
 
 #eureka-client 配置
 eureka:

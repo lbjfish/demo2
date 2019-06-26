@@ -1,11 +1,11 @@
+#Eureka-Server服务启动端口
+server:
+  port: 10001
+
 #注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
 spring:
   application:
     name: eureka-server
-
-#Eureka-Server服务启动端口
-server:
-  port: 10001
 
 #eureka-server配置
 eureka:
