@@ -12,7 +12,13 @@ spring:
 
 #eureka-client 配置
 eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+    #这个配置是相对路径（eureka会自动识别路径）, status-page-url 是绝对路径（不同项目是这个）
+    status-page-url-path: /swagger-ui.html
   client:
     #eureka-server服务地址(eureka-server项目中)
     service-url:
       defaultZone: http://localhost:10001/eureka/
+

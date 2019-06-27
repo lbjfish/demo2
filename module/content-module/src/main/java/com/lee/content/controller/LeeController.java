@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("test")
-@Api(value = "/test", tags = {"测试用控制层"})
-public class TestController {
-    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+@RequestMapping("test2")
+@Api(value = "/test2", tags = {"复制上一个控制层，完全一样"})
+public class LeeController {
+    private static final Logger logger = LoggerFactory.getLogger(LeeController.class);
 
     @GetMapping(value = "/hello")
     @ApiOperation(value = "传入参数查看结果方法", notes = "根据url传来的name更新信息")
