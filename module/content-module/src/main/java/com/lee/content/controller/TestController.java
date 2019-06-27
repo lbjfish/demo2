@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
-    @GetMapping(value = "/hello")
+    @GetMapping(value = "/v1.0/hello")
     @ApiOperation(value = "传入参数查看结果方法", notes = "根据url传来的name更新信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "传过来的名字", required = true, dataType = "string"),
@@ -30,7 +30,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "不带参数的方法")
-    @GetMapping(value = "/hello2")
+    @GetMapping(value = "/v2.0/hello2")
     public String abc2(){
         return "hello springcloud";
     }
