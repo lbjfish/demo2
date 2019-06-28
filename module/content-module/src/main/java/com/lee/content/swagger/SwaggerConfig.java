@@ -92,7 +92,7 @@ public class SwaggerConfig {
     public Docket apiOther() {
         return new Docket(DocumentationType.SWAGGER_2)
                 //定义分组
-                .groupName("Lee Controller")
+                .groupName("LeeGroup")
                 //创建ApiSelectorBuilder对象
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.lee.content.controller"))
