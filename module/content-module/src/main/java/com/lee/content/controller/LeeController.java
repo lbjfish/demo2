@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("test2")
@@ -33,5 +33,32 @@ public class LeeController {
     @GetMapping(value = "/hello2")
     public String abc2(){
         return "hello springcloud";
+    }
+
+    @GetMapping(value = "/getRelMapData")
+    @ApiOperation(value = "返回值是map类型的方法")
+    @ApiImplicitParam(name = "name", value = "你的名字", required = true, defaultValue = "lee")
+    public Map<String,Object> getRelMapData(@RequestParam(value = "name") String name){
+        Map<String,Object> map = new HashMap<>();
+        map.put("nameOne","zhangsan");
+        map.put("nameTwo","lisi");
+        map.put("nameParam",name);
+        return map;
+    }
+
+    @PostMapping(value = "/getParamMap")
+    @ApiOperation(value = "参数是map类型的方法")
+    @ApiImplicitParam(value = "传来的map对象", required = true)
+    public Map<String,Object> getParamMap(@RequestBody Map<String,Object> map){
+        Map<String,Object> map1 = map;
+        return map1;
+    }
+
+    @PostMapping(value = "/getParamEntity")
+    @ApiOperation(value = "参数是Entity类型的方法")
+    @ApiImplicitParam(value = "传来的Entity对象", required = true)
+    public MyTemporaryPo getParamEntity(@RequestBody MyTemporaryPo temporaryPo){
+        MyTemporaryPo myTemporaryPo = temporaryPo;
+        return myTemporaryPo;
     }
 }
