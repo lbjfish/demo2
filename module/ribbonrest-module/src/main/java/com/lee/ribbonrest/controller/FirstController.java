@@ -20,6 +20,8 @@ public class FirstController {
     @Autowired
     private ClientServiceImpl clientService;
 
+    /*************************************这个服务是自己模块的******************************************/
+
     @GetMapping(value = "/getName")
     @ApiOperation(value = "传入参数name", notes = "根据url传来的name更新信息")
     public Map<String,Object> abc(@RequestParam(value = "name") @ApiParam(value = "姓名", required = true, defaultValue = "God李") String name){
@@ -30,6 +32,8 @@ public class FirstController {
         map.put("nameDefault2","wangwu");
         return map;
     }
+
+    /*************************************下面这些服务是调用content-module模块的******************************************/
 
     @GetMapping(value = "/relString")
     @ApiOperation(value = "这是Ribbon+RestTemplate调用服务接口，返回值String", notes = "根据url传来的name和age更新信息")

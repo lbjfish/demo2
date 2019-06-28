@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-//通过@EnableDiscoveryClient向服务中心发现（这样就能调用别的被添加到eureka的服务）
+//通过@EnableDiscoveryClient向服务中心发现（这样就能调用别的被添加到eureka的服务,如果需要服务间调用，就必加）
 @EnableDiscoveryClient
 //EnableEurekaClient表明为EurekaClient
 @EnableEurekaClient
