@@ -1,0 +1,29 @@
+#Eureka-client 启动端口
+server:
+  port: 10024
+  #指定访问项目路径的项目名(不加访问路径是：http://localhost:10024/test/hello)
+  servlet:
+    context-path: /feignweb
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: feignweb-module-lbj
+
+#eureka-client 配置
+eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口(注：eureka会自动获取本机ip和该服务端口号)，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+    #这个配置是相对路径（eureka会自动识别路径）, status-page-url 是绝对路径（不同项目是这个）
+    status-page-url-path: /swagger-ui.html
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+
+#不配置这个也行（不配置就默认超时时间，好像2秒左右，忘记了）
+#ribbon的超时时间(配置的原因是我打断点每次到被调用的接口里的时候就报错（Read timed out），就是因为feign中集成的ribbon默认超时时间太短)
+ribbon:
+  ReadTimeout: 50000
+  ConnectTimeout: 50000

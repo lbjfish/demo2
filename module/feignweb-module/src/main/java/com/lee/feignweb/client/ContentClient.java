@@ -1,0 +1,33 @@
+package com.lee.feignweb.client;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
+
+@FeignClient(name = "content-module-lbj")
+public interface ContentClient {
+
+    @GetMapping(value = "/content/test2/hello")
+    @ApiOperation(value = "传入参数查看结果方法", notes = "根据url传来的name更新信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "传过来的名字", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "age" , value = "传过来的年龄")
+    })
+    String abc(@RequestParam(value = "name") String name, @RequestParam(value = "age") int age);
+
+    @PostMapping(value = "/content/test2/getParamMap")
+    @ApiOperation(value = "参数是map类型的方法")
+    @ApiImplicitParam(value = "传来的map对象", required = true)
+    Map<String,Object> getParamMap(@RequestBody Map<String,Object> map);
+
+    @ApiOperation(value = "不带参数的方法")
+    @GetMapping(value = "/content/test/v2.0/hello2")
+    String abc2();
+}
