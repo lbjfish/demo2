@@ -17,6 +17,7 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
+        <!-- feign原生就支持hystrix,所以不用引<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>（当然ribbon+rest需要引） -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>

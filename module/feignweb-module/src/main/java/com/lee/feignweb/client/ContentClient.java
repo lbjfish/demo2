@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(name = "content-module-lbj")
+@FeignClient(name = "content-module-lbj", fallback = ContentClientHystrix.class)
 public interface ContentClient {
 
     @GetMapping(value = "/content/test2/hello")
