@@ -38,14 +38,14 @@ public class CallingIntefaceController {
 
 
     @PostMapping(value = "/feignGetParamMap")
-    @ApiOperation(value = "参数是map类型的方法（postman可以调通）")
+    @ApiOperation(value = "参数是map类型的方法（swagger好像不行,postman可以调通）")
     @ApiImplicitParam(value = "传来的map对象", required = true)
     public Map<String,Object> getParamMap(@RequestBody Map<String,Object> map){
         Map<String,Object> map2 = contentClient.getParamMap(map);
         return map2;
     }
 
-    @ApiOperation(value = "feign不带参数的方法（postman可以调通）")
+    @ApiOperation(value = "feign不带参数的方法（swagger有时候不行,postman可以调通）")
     @GetMapping(value = "/feignHello2")
     public String abc2(){
         String returnVal = contentClient.abc2();
