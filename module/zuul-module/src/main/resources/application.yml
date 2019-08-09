@@ -1,0 +1,79 @@
+#Eureka-client 启动端口
+server:
+  port: 10025
+  #指定访问项目路径的项目名(不加访问路径是：http://localhost:10024/test/hello)
+  servlet:
+    context-path: /zuul
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: zuul-module-lbj
+
+#eureka-client 配置
+eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口(注：eureka会自动获取本机ip和该服务端口号)，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+    #这个配置是相对路径（eureka会自动识别路径）, status-page-url 是绝对路径（不同项目是这个）
+    status-page-url-path: /swagger-ui.html
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+
+#不配置这个也行（不配置就默认超时时间，好像2秒左右，忘记了）
+#ribbon的超时时间(配置的原因是我打断点每次到被调用的接口里的时候就报错（Read timed out），就是因为feign中集成的ribbon默认超时时间太短)
+ribbon:
+  ReadTimeout: 50000
+  ConnectTimeout: 50000
+
+#开启Hystrix，Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它
+feign:
+  hystrix:
+    enabled: true
+
+
+#Zuul适用场景：
+    #获取商品信息需要获取商品微服务、创建订单需要调用订单微服务，而各个微服务可能分布在各个机器上，
+    #前端要获取到数据就必须要知道各个微服务的地址，这给前端增加开发的复杂性。一段后端的某个微服务地址改变了，
+    #前端可能还要修改。而且后端各个微服务权限认证也不好认证，那么有没有一种好的解决办法呢？服务网关就正好可以解决这个问题，
+    #在 spring cloud 中使用的就是zuul来实现服务网关。我们来看一下有了服务网关后，前端程序调用后端服务。
+
+#其他说明：
+    #Zuul做为网关层，自身也是一个微服务，跟其它服务Service-1，Service-2, ... Service-N一样，都注册在eureka server上，
+    #可以相互发现，zuul能感知到哪些服务在线，同时通过配置路由规则（后面会给出示例），可以将请求自动转发到指定的后端微服务上，
+    #对于一些公用的预处理（比如：权限认证，token合法性校验，灰度验证时部分流量引导之类）,
+    #可以放在所谓的过滤器(ZuulFilter)里处理，这样后端服务以后新增了服务，zuul层几乎不用修改。
+
+#Netflix使用Zuul进行以下操作：
+  #1、查看 zuul 中配置好的路由和过滤器信息
+  #2、忽略所有微服务或某些微服务
+  #3、忽略所有为服务，只路由指定的微服务
+  #4、通过path和url访问到具体的某台机器上 ***********************这个挺好
+  #5、脱离eureka进行访问，并使之具有负载均衡和隔离的机制等
+  #6、转发前是否去掉路由前缀
+  #7、为所有路由都增加一个通过的前缀
+  #8、忽略某些路径不进行路由
+  #9、敏感头的传递（比如Cookie等）全局设置和某个微服务设置
+  #10、忽略头
+  #11、spring security 在classpath 下会忽略的头
+  #12、本地调换和路由的优先级
+  #13、配置网关超时
+  #14、重写 Location 头
+  #15、文件上传处理
+  #16、负载均衡 （这个我强调下，只要有多个服务端集群（比如content模块的10022、10122两台），zuul会自动负载不需要配置）
+zuul:
+  #zuul的路由功能
+  routes:
+    api-a:
+        path: /api-a/**
+        #通过服务路由
+        serviceId: content-module-lbj
+    api-b:
+        path: /api-b/**
+        serviceId: content-module-lbj
+    github:
+        path: /github/**
+        #通过地址路由
+        url: https://github.com/
