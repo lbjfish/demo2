@@ -2,20 +2,109 @@
 server:
   port: 10026
   #指定访问项目路径的项目名(不加访问路径是：http://localhost:10024/test/hello)
+  servlet:
+    context-path: /gateway #奇怪：引入gateway之后，配置好像这个路径不起作用
+
+
+# hystrix 信号量隔离，3秒后自动超时（为啥我配了这个貌似没反应，链接地址：https://blog.csdn.net/zhuyu19911016520/article/details/86499528）
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 3000
 
 #注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
 spring:
+  redis:
+    host: 192.168.1.179
+    port: 6379
+    password: Mogu07550831..
   application:
     name: gateway-module-lbj
   #id标签配置的是router的id，每个router都需要一个唯一的id，
   #uri配置的是将请求路由到哪里，本案例全部路由到http://httpbin.org:80/get
   cloud:
     gateway:
+      discovery:
+        locator:
+          # 是否可以通过其他服务的serviceId来转发到具体的服务实例。默认为false
+          # 为true,自动创建路由,路由访问方式：http://Gateway_HOST:Gateway_PORT/大写的serviceId/**，其中微服务应用名默认大写访问
+          enabled: true
       routes:
-        - id: host_route
-          uri: https://www.iana.org/domains/reserved
+        - id: path_route
+          uri: https://new.qq.com
           predicates:
-            - Path=/zzzgd/** # 请求地址携带zzzgd的,则转发
+            - Path=/ch/edu # 请求地址携带zzzgd的,则转发
+        - id: header_route
+          uri: http://example.org
+          predicates:
+            - Header=X-Request-Id, \d+
+#暂时先注释掉，因为会影响别的测试
+#        - id: after_route
+#          uri: http://httpbin.org
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver] #当请求的时间在这个配置的时间之后，请求会被路由到http://httpbin.org
+        - id: host_route
+          uri: http://httpbin.org
+          predicates:
+            - Host=**.libaojun.com
+        #这个设置成get会影响下面的query_route查询
+        - id: method_route
+          uri: http://httpbin.org
+          predicates:
+            - Method=POST
+        - id: query_route
+          uri: http://example.org
+          predicates:
+            - Query=foo, ba.    #对请求参数进行过滤https://localhost:10026?foo=bar(.代表匹配一个，**代表匹配所有)
+        - id: neo_route
+          uri: http://www.ityouknow.com
+          predicates:
+            - Path=/spring-cloud
+      # 路由到其他服务,url需要用[lb://]+[serviceId]
+        - id: service_client
+          uri: lb://feignweb-module-lbj #为什么没有加入feign的maven引用还能调用feignweb项目，怀疑是gateweb的原因
+          predicates:
+            - Path=/to_client/** # 如果请求地址满足/to_client/**,则转发到 feignweb-module-lbj 服务
+          filters:
+            - StripPrefix=1 # 去除请求地址中的to_client（fuck：这个本来是减路径，为啥我用这个是加路径，猜测可能被我写的其他predicates影响了）
+      #重写路径（nginx支持同样功能，zuul不支持）
+        - id: rewritepath_route
+          uri: https://blog.csdn.net
+          predicates:
+            - Path=/foo/**
+          filters:
+            - RewritePath=/foo/(?<segment>.*), /$\{segment}
+        - id: query_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - Query=username, zzz. # 请求参数含有username,且值满足zzz开头的,则转发(对值的匹配可以省略)
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+            - AddRequestParameter=age, 18
+        - id: lee_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Path=/delay/3
+          filters:
+            - AddRequestHeader=ppp, ooo
+        #限流
+        - id: fsh-house
+          uri: lb://feignweb-module-lbj
+          predicates:
+            - Path=/house/**
+        #filter名称必须是RequestRateLimiter
+        #redis-rate-limiter.replenishRate：允许用户每秒处理多少个请求
+        #redis-rate-limiter.burstCapacity：令牌桶的容量，允许在一秒钟内完成的最大请求数
+        #key-resolver：使用SpEL按名称引用bean
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 5
+                key-resolver: "#{@userKeyResolver}"
+        #加入熔断降级
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/defaultfallback'
+            - StripPrefix=1
 
 #eureka-client 配置
 eureka:
@@ -34,8 +123,3 @@ eureka:
 ribbon:
   ReadTimeout: 50000
   ConnectTimeout: 50000
-
-#开启Hystrix，Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它
-feign:
-  hystrix:
-    enabled: true
