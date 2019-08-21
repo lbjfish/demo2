@@ -11,6 +11,9 @@
     <modules>
         <module>content-module</module>
         <module>ribbonrest-module</module>
+        <module>feignweb-module</module>
+        <module>zuul-module</module>
+        <module>gateway-module</module>
     </modules>
 
 </project>
