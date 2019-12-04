@@ -14,6 +14,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 分支 config-actuator-bus 动态刷新解释：
+ * 以前的/refresh是每个客户端自己去调用（比如content、feignweb、configclient之类的客户端），少了还好，但是如果客户端特别多，比如1000个加。
+ * 那每个都去调用这个地址：（以configclient（port：10027）客户端为例）
+ * http://10.0.192.148:10027/config/actuator/refresh。那1000加个客户端都要去调这个1000次那不得累死？
+ * 所以，用mq（目前仅支持rabiitmq和kafka），当config-server发现配置更新，所有1000加个客户端都自动更新（观察者呀），这样就很方便了。
+ * 使用bus的地址： （看端口号10002，就知道明显是config-server这个服务）
+ * http://10.0.192.148:10002/actuator/bus-refresh
+ */
+@RefreshScope // 使用该注解的类，会在接到SpringCloud配置中心配置刷新的时候，自动将新的配置更新到该类对应的字段中
 @RestController
 @RequestMapping("config")
 @Api(value = "/config", tags = {"测试 config 的controller"})

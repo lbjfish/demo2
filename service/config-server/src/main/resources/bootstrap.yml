@@ -8,3 +8,15 @@ spring:
           username:
           password:
       label: master
+    ## 开启消息跟踪 (bus包)  http://localhost:10002/actuator/httptrace
+    bus:
+      trace:
+        enabled: true
+
+# spring-boot-starter-actuator包配置
+management:
+  #refresh接入点显式暴露出来
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health,info,bus-refresh #开放出去的端口

@@ -9,8 +9,23 @@ server:
 spring:
   application:
     name: configclient-module-lbj
+  #以下配置是动态刷新config用spring-cloud-starter-bus-amqp（选用rabbitmq）
+  #本地环境不需要配置mq，但是需要启动mq,Springboot会自动连接本地mq (我这里配置是因为如果不是本地环境需要配置，仅做个提醒用)
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 #开启Hystrix，Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它
 feign:
   hystrix:
     enabled: true
+
+# spring-boot-starter-actuator包配置
+management:
+  #refresh接入点显式暴露出来
+  endpoints:
+    web:
+      exposure:
+        include: refresh

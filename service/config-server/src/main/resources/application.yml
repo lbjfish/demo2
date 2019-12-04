@@ -6,6 +6,14 @@ server:
 spring:
   application:
     name: config-server
+  #以下配置是动态刷新config用spring-cloud-starter-bus-amqp（选用rabbitmq）
+  #本地环境不需要配置mq，但是需要启动mq,Springboot会自动连接本地mq (我这里配置是因为如果不是本地环境需要配置，仅做个提醒用)
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 
 #eureka-client 配置
 eureka:
@@ -16,4 +24,5 @@ eureka:
     #eureka-server服务地址(eureka-server项目中)
     service-url:
       defaultZone: http://localhost:10001/eureka/
+
 
