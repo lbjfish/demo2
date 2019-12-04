@@ -1,5 +1,6 @@
 package com.lee.feignweb.client;
 
+import com.lee.feignweb.controller.feign.MyTemporaryPo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,12 @@ public class ContentClientHystrix implements ContentClient {
     public Map<String, Object> getParamMap(Map<String, Object> map) {
         log.warn("进入断路器-getParamMap。。。");
         throw new RuntimeException("调用getParamMap service失败！！！");
+    }
+
+    @Override
+    public MyTemporaryPo getParamEntity(MyTemporaryPo temporaryPo) {
+        log.warn("进入断路器-getParamEntity。。。");
+        throw new RuntimeException("getParamEntity service失败！！！");
     }
 
     @Override

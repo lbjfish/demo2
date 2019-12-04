@@ -45,6 +45,14 @@ public class CallingIntefaceController {
         return map2;
     }
 
+    @PostMapping(value = "/feignGetParamEntity")
+    @ApiOperation(value = "参数是Entity类型的方法（swagger好像不行,postman可以调通）")
+    @ApiImplicitParam(value = "传来的Entity对象", required = true)
+    public MyTemporaryPo getParamEntity(@RequestBody MyTemporaryPo temporaryPo){
+        MyTemporaryPo myTemporaryPo = contentClient.getParamEntity(temporaryPo);
+        return myTemporaryPo;
+    }
+
     @ApiOperation(value = "feign不带参数的方法（swagger有时候不行,postman可以调通）")
     @GetMapping(value = "/feignHello2")
     public String abc2(){

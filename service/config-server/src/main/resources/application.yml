@@ -1,0 +1,19 @@
+#Eureka-client 启动端口
+server:
+  port: 10002
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: config-server
+
+#eureka-client 配置
+eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口(注：eureka会自动获取本机ip和该服务端口号)，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+

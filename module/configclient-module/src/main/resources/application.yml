@@ -1,0 +1,16 @@
+#Eureka-client 启动端口
+server:
+  port: 10027
+  #指定访问项目路径的项目名(不加访问路径是：http://localhost:10022/test/hello)
+  servlet:
+    context-path: /config
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: configclient-module-lbj
+
+#开启Hystrix，Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它
+feign:
+  hystrix:
+    enabled: true

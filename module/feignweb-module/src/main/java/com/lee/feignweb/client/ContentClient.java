@@ -1,5 +1,6 @@
 package com.lee.feignweb.client;
 
+import com.lee.feignweb.controller.feign.MyTemporaryPo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +27,11 @@ public interface ContentClient {
     @ApiOperation(value = "参数是map类型的方法")
     @ApiImplicitParam(value = "传来的map对象", required = true)
     Map<String,Object> getParamMap(@RequestBody Map<String,Object> map);
+
+    @PostMapping(value = "/content/test2/getParamEntity")
+    @ApiOperation(value = "参数是Entity类型的方法")
+    @ApiImplicitParam(value = "传来的Entity对象", required = true)
+    MyTemporaryPo getParamEntity(@RequestBody MyTemporaryPo temporaryPo);
 
     @ApiOperation(value = "不带参数的方法")
     @GetMapping(value = "/content/test/v2.0/hello2")

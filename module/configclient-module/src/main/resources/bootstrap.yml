@@ -1,0 +1,25 @@
+spring:
+  cloud:
+    config:
+      name: springcloud-config             #对应{application}部分
+      profile: pro                         #对应{profile}部分
+      # 因为引入了eureka，因此不用通过ip+端口号访问，而是直接通过服务id访问
+      #uri: http://localhost:10002/          #配置中心的具体地址
+      label: master                        #对应git的分支。如果配置中心使用的是本地存储，则该参数无用
+      discovery:
+        service-id: config-server      #指定配置中心的service-id，便于扩展为高可用配置集群。
+        #默认是false，如果要开启注册中心，必须是true
+        enabled: true
+
+#eureka-client 配置
+# 重点：记住了，如果用了config配置中心，则eureka必须配置在 bootstrap.yml配置文件中，如果配置在application.yml中就会报找不到服务id的错误
+eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口(注：eureka会自动获取本机ip和该服务端口号)，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+    #这个配置是相对路径（eureka会自动识别路径）, status-page-url 是绝对路径（不同项目是这个）
+    status-page-url-path: /swagger-ui.html
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
