@@ -1,0 +1,35 @@
+#Eureka-client 启动端口
+server:
+  port: 10028
+  #指定访问项目路径的项目名(不加访问路径是：http://localhost:10022/test/hello)
+
+#注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
+spring:
+  application:
+    name: sleuthhi-module-lbj
+  # 链路追踪必传
+  sleuth:
+    web:
+      client:
+        enabled: true
+    sampler:
+      probability: 1.0 # 将采样比例设置为 1.0，也就是全部都需要。默认是 0.1
+    zipkin:
+      base-url: http://localhost:9411/ # 指定了 Zipkin 服务器的地址
+
+#eureka-client 配置
+eureka:
+  instance:
+    #设置true，则跳转链接为微服务启动机器的ip+端口(注：eureka会自动获取本机ip和该服务端口号)，设为false为微服务启动机器的名称+端口
+    prefer-ip-address: true
+    #这个配置是相对路径（eureka会自动识别路径）, status-page-url 是绝对路径（不同项目是这个）
+    status-page-url-path: /swagger-ui.html
+  client:
+    #eureka-server服务地址(eureka-server项目中)
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+
+#开启Hystrix，Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它
+feign:
+  hystrix:
+    enabled: true
