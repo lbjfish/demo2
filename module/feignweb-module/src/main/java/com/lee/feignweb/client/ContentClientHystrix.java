@@ -1,6 +1,7 @@
 package com.lee.feignweb.client;
 
 import com.lee.feignweb.controller.feign.MyTemporaryPo;
+import feign.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -35,5 +36,11 @@ public class ContentClientHystrix implements ContentClient {
     public String abc2() {
         log.warn("进入断路器-abc2。。。");
         return "sorry，服务调用好像失败了！！！" ;
+    }
+
+    @Override
+    public Response downloadFile() {
+        log.warn("进入断路器-downloadFile。。。");
+        return null;
     }
 }

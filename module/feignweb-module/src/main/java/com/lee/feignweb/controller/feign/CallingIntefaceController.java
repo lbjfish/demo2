@@ -1,6 +1,7 @@
 package com.lee.feignweb.controller.feign;
 
 import com.lee.feignweb.client.ContentClient;
+import feign.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -8,8 +9,14 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 @RestController
@@ -58,5 +65,35 @@ public class CallingIntefaceController {
     public String abc2(){
         String returnVal = contentClient.abc2();
         return "我是feign传过来的接口feignHello2：" + returnVal;
+    }
+
+    @RequestMapping(value = "/download",method = RequestMethod.GET)
+    public ResponseEntity<byte[]> downFile(){
+        ResponseEntity<byte[]> result=null ;
+        InputStream inputStream = null;
+        try {
+            // feign文件下载
+            Response response = contentClient.downloadFile();
+            Response.Body body = response.body();
+            inputStream = body.asInputStream();
+            byte[] b = new byte[inputStream.available()];
+            inputStream.read(b);
+            HttpHeaders heads = new HttpHeaders();
+            heads.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=123.txt");
+            heads.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
+            result = new ResponseEntity <byte[]>(b,heads, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
     }
 }
