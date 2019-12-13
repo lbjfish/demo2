@@ -7,8 +7,13 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +77,38 @@ public class LeeController {
     @ApiOperation(value = "zuul测试负载均衡用")
     public String whoami() {
         return "I am from "+ 10122 + ", this is new world";
+    }
+
+    /************************************************ 测试 feign 文件下载功能 ***********************************************/
+    @GetMapping(value = "/downloadFile")
+    @ApiOperation(value = "测试feign 文件下载功能用")
+    public void downloadFile(HttpServletResponse response) {
+        String filePath = "D://1.txt";
+        File file = new File(filePath);
+        InputStream in = null;
+        if(file.exists()){
+            try {
+                OutputStream out = response.getOutputStream();
+                response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+                response.addHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel;charset=UTF-8");
+                in = new FileInputStream(file);
+                byte buffer[] = new byte[1024];
+                int length = 0;
+                while ((length = in.read(buffer)) >= 0){
+                    out.write(buffer,0,length);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(in != null){
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 }

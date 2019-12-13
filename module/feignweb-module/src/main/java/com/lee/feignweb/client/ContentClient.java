@@ -36,4 +36,8 @@ public interface ContentClient {
     @ApiOperation(value = "不带参数的方法")
     @GetMapping(value = "/content/test/v2.0/hello2")
     String abc2();
+
+    @GetMapping(value = "/content/test2/downloadFile", consumes = "application/vnd.ms-excel;charset=UTF-8")
+    @ApiOperation(value = "测试feign 文件下载功能用")
+    Response downloadFile();
 }
