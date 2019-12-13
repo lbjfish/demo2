@@ -80,7 +80,7 @@ public class CallingIntefaceController {
             inputStream.read(b);
             HttpHeaders heads = new HttpHeaders();
             heads.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=123.txt");
-            heads.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+            heads.add(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel;charset=UTF-8");
 
             result = new ResponseEntity <byte[]>(b,heads, HttpStatus.OK);
         } catch (IOException e) {
