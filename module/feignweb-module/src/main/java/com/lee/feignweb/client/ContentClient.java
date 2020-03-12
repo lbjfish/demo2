@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "content-module-lbj", fallback = ContentClientHystrix.class)
@@ -28,6 +29,11 @@ public interface ContentClient {
     @ApiOperation(value = "参数是map类型的方法")
     @ApiImplicitParam(value = "传来的map对象", required = true)
     Map<String,Object> getParamMap(@RequestBody Map<String,Object> map);
+
+    @PostMapping(value = "/content/test2/getListParamMap")
+    @ApiOperation(value = "参数是list类型的方法")
+    @ApiImplicitParam(value = "传来的list对象", required = true)
+    List<String> getListParamMap(@RequestBody List<String> list);
 
     @PostMapping(value = "/content/test2/getParamEntity")
     @ApiOperation(value = "参数是Entity类型的方法")

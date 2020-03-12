@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -61,6 +62,14 @@ public class LeeController {
     public Map<String,Object> getParamMap(@RequestBody Map<String,Object> map){
         Map<String,Object> map1 = map;
         return map1;
+    }
+
+    @PostMapping(value = "/getListParamMap")
+    @ApiOperation(value = "参数是list类型的方法")
+    @ApiImplicitParam(value = "传来的list对象", required = true)
+    public List<String> getListParamMap(@RequestBody List<String> list){
+        List<String> list2 = list;
+        return list;
     }
 
     @PostMapping(value = "/getParamEntity")

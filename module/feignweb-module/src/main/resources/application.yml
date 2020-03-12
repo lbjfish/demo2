@@ -32,3 +32,12 @@ ribbon:
 feign:
   hystrix:
     enabled: true
+
+#熔断超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000 #10秒

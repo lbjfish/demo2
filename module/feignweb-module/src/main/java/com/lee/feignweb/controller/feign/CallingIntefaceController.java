@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -45,11 +47,19 @@ public class CallingIntefaceController {
 
 
     @PostMapping(value = "/feignGetParamMap")
-    @ApiOperation(value = "参数是map类型的方法（swagger好像不行,postman可以调通）")
+    @ApiOperation(value = "参数是map类型的方法（swagger好像不行,postman可以调通,只能用postman表单形式提交）")
     @ApiImplicitParam(value = "传来的map对象", required = true)
-    public Map<String,Object> getParamMap(@RequestBody Map<String,Object> map){
+    public Map<String,Object> getParamMap(@RequestParam Map<String,Object> map){
         Map<String,Object> map2 = contentClient.getParamMap(map);
         return map2;
+    }
+
+    @PostMapping(value = "/feignGetListParamMap")
+    @ApiOperation(value = "参数是list类型的方法（swagger好像不行,postman可以调通）")
+    public List<String> getListParamMap(){
+        List<String> list = Arrays.asList("1","2","3");
+        List<String> list2 = contentClient.getListParamMap(list);
+        return list2;
     }
 
     @PostMapping(value = "/feignGetParamEntity")

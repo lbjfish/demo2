@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -24,6 +25,12 @@ public class ContentClientHystrix implements ContentClient {
     public Map<String, Object> getParamMap(Map<String, Object> map) {
         log.warn("进入断路器-getParamMap。。。");
         throw new RuntimeException("调用getParamMap service失败！！！");
+    }
+
+    @Override
+    public List<String> getListParamMap(List<String> list) {
+        log.warn("进入断路器-getListParamMap。。。");
+        throw new RuntimeException("调用 getListParamMap service失败！！！");
     }
 
     @Override
