@@ -1,6 +1,6 @@
 #Eureka-client 启动端口
 server:
-  port: 10034
+  port: 10024
   #指定访问项目路径的项目名(不加访问路径是：http://localhost:10024/test/hello)
   servlet:
     context-path: /feignweb
