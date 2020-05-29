@@ -80,6 +80,13 @@ public class LeeController {
         return myTemporaryPo;
     }
 
+    /************************************************ 测试 eureka 负载均衡用 ***********************************************/
+    @GetMapping("/getPort")
+    @ApiOperation(value = "测试eureka做负载均衡")
+    public String getPort(){
+        return "我是来自端口为："+ port + " 的服务！";
+    }
+
 
     /************************************************ 测试 zuul 用 ***********************************************/
     @GetMapping("/whoami")

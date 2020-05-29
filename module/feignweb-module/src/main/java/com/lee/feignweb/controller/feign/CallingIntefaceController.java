@@ -77,6 +77,12 @@ public class CallingIntefaceController {
         return "我是feign传过来的接口feignHello2：" + returnVal;
     }
 
+    @GetMapping("/getPort")
+    @ApiOperation(value = "测试eureka做负载均衡")
+    public String getPort(){
+        return "我是feign传过来的接口getPort："+ contentClient.getPort();
+    }
+
     @RequestMapping(value = "/download",method = RequestMethod.GET)
     public ResponseEntity<byte[]> downFile(){
         ResponseEntity<byte[]> result=null ;

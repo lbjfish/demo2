@@ -16,6 +16,8 @@
         <module>gateway-module</module>
         <module>configclient-module</module>
         <module>sleuthhi-module</module>
+        <module>nacos-provider</module>
+        <module>nacos-consumer</module>
     </modules>
 
 </project>

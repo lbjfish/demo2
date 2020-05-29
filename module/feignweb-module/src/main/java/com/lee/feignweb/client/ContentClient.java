@@ -44,6 +44,10 @@ public interface ContentClient {
     @GetMapping(value = "/content/test/v2.0/hello2")
     String abc2();
 
+    @ApiOperation(value = "测试eureka做负载均衡")
+    @GetMapping("/content/test2/getPort")
+    String getPort();
+
     @GetMapping(value = "/content/test2/downloadFile", consumes = "application/vnd.ms-excel;charset=UTF-8")
     @ApiOperation(value = "测试feign 文件下载功能用")
     Response downloadFile();

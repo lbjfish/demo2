@@ -46,6 +46,12 @@ public class ContentClientHystrix implements ContentClient {
     }
 
     @Override
+    public String getPort() {
+        log.warn("进入断路器-getPort。。。");
+        throw new RuntimeException("getPort service失败！！！");
+    }
+
+    @Override
     public Response downloadFile() {
         log.warn("进入断路器-downloadFile。。。");
         return null;
