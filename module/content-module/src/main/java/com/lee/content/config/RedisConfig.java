@@ -18,6 +18,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
@@ -29,64 +31,31 @@ public class RedisConfig {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer()); // key的序列化类型
-        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        //  解决查询缓存转换异常的问题
-        ObjectMapper objectMapper = new ObjectMapper();
-        // 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        // 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
-        //(必须配置这个，不配置这个反序列化会把po转成map，那就不好办了)
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        template.setValueSerializer(jackson2JsonRedisSerializer); // value的序列化类型
+
+        template.setValueSerializer(jackson2JsonRedisSerializer()); // value的序列化类型
         // 设置hash key 和value序列化模式 (解决用hash的时候字节问题，
         // 因为RedisTemplate的时候会转成字节流，只能用StringRedisTemplate，现在加了这个就无须StringRedisTemplate了)
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer());
         return template;
     }
 
+    /**
+     * 这个在spring cache上必须要配置，不引用spring chche不用配置
+     * @param redisConnectionFactory
+     * @return
+     */
     @Bean
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheManager cacheManager = RedisCacheManager.builder(redisConnectionFactory)
-                //这个配置是默认的配置，也就是说，对全部 cacheNames 生效
-                .cacheDefaults(defaultCacheConfig())
-                //下面两个配置是对特定的某个 cacheNames 生效（可以把下面的当做，是特殊对待的配置）
-                .withInitialCacheConfigurations(singletonMap("predefined", defaultCacheConfig().disableCachingNullValues()))
-                .withInitialCacheConfigurations(singletonMap("predefined2", defaultCacheConfig().disableCachingNullValues().entryTtl(Duration.ofSeconds(10))))
+                //这个配置是默认的配置(默认配置的10分钟)，也就是说，对全部 cacheNames 生效
+                .cacheDefaults(defaultCacheConfigWithTtl(Duration.ofMinutes(10)))
+                //下面两个配置是对特定的某个 cacheNames 生效（可以把下面的当做，是特殊对待的缓存配置），下面两个配置，一个是30秒失效，一个是20分钟
+                .withInitialCacheConfigurations(getRedisCacheConfigurationMap())
                 .transactionAware()
                 .build();
 
         return cacheManager;
-    }
-
-    private RedisCacheConfiguration defaultCacheConfig() {
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        // 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        // 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
-        //(必须配置这个，不配置这个反序列化会把po转成map，那就不好办了)
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-
-        //  TTL  Time To Live
-        /*前缀
-         * 过期时间
-         * key序列化
-         * value序列化
-         * */
-        RedisCacheConfiguration redisCacheConfiguration =
-                RedisCacheConfiguration.defaultCacheConfig()
-                        //.prefixKeysWith("redis")
-                        //失效时间
-                        .entryTtl(Duration.ofMinutes(20))
-                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
-                        .disableCachingNullValues();
-
-        return redisCacheConfiguration;
     }
 
     @Bean
@@ -105,30 +74,48 @@ public class RedisConfig {
         };
     }
 
+    //这个方法提供序列化和反序列化方式
+    private Jackson2JsonRedisSerializer jackson2JsonRedisSerializer(){
+        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        //  解决查询缓存转换异常的问题
+        ObjectMapper objectMapper = new ObjectMapper();
+        // 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        // 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
+        //(必须配置这个，不配置这个反序列化会把po转成map，那就不好办了)
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+        return jackson2JsonRedisSerializer;
+    }
 
-//    @Bean
-//    CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-//        //user信息缓存配置
-//        RedisCacheConfiguration userCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(30)).disableCachingNullValues().prefixKeysWith("user");
-//        //product信息缓存配置
-//        RedisCacheConfiguration productCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)).disableCachingNullValues().prefixKeysWith("product");
-//        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-//        redisCacheConfigurationMap.put("user", userCacheConfiguration);
-//        redisCacheConfigurationMap.put("product", productCacheConfiguration);
-//        //初始化一个RedisCacheWriter
-//        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory);
-//
-//
-//        //设置CacheManager的值序列化方式为JdkSerializationRedisSerializer,但其实RedisCacheConfiguration默认就是使用StringRedisSerializer序列化key，JdkSerializationRedisSerializer序列化value,所以以下注释代码为默认实现
-//        RedisSerializationContext.SerializationPair<Object> pair = RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer(Object.class));
-//        RedisCacheConfiguration defaultCacheConfig=RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(pair);
-//
-//
-//        //RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig();
-//        //设置默认超过期时间是30秒
-//        defaultCacheConfig.entryTtl(Duration.ofMinutes(2));
-//        //初始化RedisCacheManager
-//        RedisCacheManager cacheManager = new RedisCacheManager(redisCacheWriter, defaultCacheConfig);
-//        return cacheManager;
-//    }
+    //下面这里两个方法是spring cache需要用的，主要是两块：
+    // 1.配置默认的序列化方案和过期时间
+    // 2.配置自定义的序列化方案和过期时间（例如UserDO和predefined2），以后可以加更多的自定义方案，这里只是举例两个缓存
+    private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
+        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+        redisCacheConfigurationMap.put("UserDO", this.defaultCacheConfigWithTtl(Duration.ofSeconds(30)));
+        redisCacheConfigurationMap.put("predefined2", this.defaultCacheConfigWithTtl(Duration.ofMinutes(20)));
+
+        return redisCacheConfigurationMap;
+    }
+
+    private RedisCacheConfiguration defaultCacheConfigWithTtl(Duration ttl) {
+        //  TTL  Time To Live
+        /*前缀
+         * 过期时间
+         * key序列化
+         * value序列化
+         * */
+        RedisCacheConfiguration redisCacheConfiguration =
+                RedisCacheConfiguration.defaultCacheConfig()
+                        //.prefixKeysWith("redis")
+                        //失效时间
+                        .entryTtl(ttl)
+                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer()))
+                        .disableCachingNullValues();
+
+        return redisCacheConfiguration;
+    }
 }

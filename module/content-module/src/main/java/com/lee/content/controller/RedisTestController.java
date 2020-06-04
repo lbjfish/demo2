@@ -89,7 +89,7 @@ public class RedisTestController {
 
     @GetMapping("/get")
     public Object get(String str){
-        UserDO abcd = (UserDO) redisTemplate.opsForValue().get(str);
+        Object abcd = redisTemplate.opsForValue().get(str);
         return abcd;
     }
 
