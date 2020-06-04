@@ -115,4 +115,61 @@ public class SwaggerConfig {
                 .version("LeeController")
                 .build();
     }
+
+
+    @Bean
+    public Docket apiOther2() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                //定义分组
+                .groupName("redisGroup")
+                //创建ApiSelectorBuilder对象
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.lee.content.controller"))
+                //要过滤的接口(用这个做版本控制),不过滤是PathSelectors.any()
+                //.paths(Predicates.or(PathSelectors.regex("/api2/.*"))).build()
+                //这里不过滤接口，意思所有接口都显示在swagger上
+                .paths(PathSelectors.regex("/redis.*"))
+                .build()
+                .apiInfo(apiInfoOther2());
+        //关闭默认返回值
+        //.useDefaultResponseMessages(false);
+    }
+
+
+    private ApiInfo apiInfoOther2() {
+        return new ApiInfoBuilder()
+                .title("Lee RedisTestController模块的")
+                .description("Lee RedisTestController模块的")
+                .contact(new Contact("lbjfish", "https://github.com/lbjfish", "lbjlee@163.com"))
+                .version("RedisTestController")
+                .build();
+    }
+
+    @Bean
+    public Docket apiOther3() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                //定义分组
+                .groupName("cacheGroup")
+                //创建ApiSelectorBuilder对象
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.lee.content.controller"))
+                //要过滤的接口(用这个做版本控制),不过滤是PathSelectors.any()
+                //.paths(Predicates.or(PathSelectors.regex("/api2/.*"))).build()
+                //这里不过滤接口，意思所有接口都显示在swagger上
+                .paths(PathSelectors.regex("/cache.*"))
+                .build()
+                .apiInfo(apiInfoOther3());
+        //关闭默认返回值
+        //.useDefaultResponseMessages(false);
+    }
+
+
+    private ApiInfo apiInfoOther3() {
+        return new ApiInfoBuilder()
+                .title("Lee CacheController模块的")
+                .description("Lee CacheController模块的")
+                .contact(new Contact("lbjfish", "https://github.com/lbjfish", "lbjlee@163.com"))
+                .version("CacheController")
+                .build();
+    }
 }
