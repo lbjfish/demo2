@@ -28,6 +28,7 @@ public class BaseUserService implements UserService {
     }
 
     @Override
+    @Cacheable(value = "UserDO", key="'username=' + #username")
     public UserDO getByUsername(String username) {
         return userRepository.findByUsername(username);
     }
