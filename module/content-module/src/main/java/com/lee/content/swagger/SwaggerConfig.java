@@ -172,4 +172,32 @@ public class SwaggerConfig {
                 .version("CacheController")
                 .build();
     }
+
+    @Bean
+    public Docket apiOther4() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                //定义分组
+                .groupName("redissonGroup")
+                //创建ApiSelectorBuilder对象
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.lee.content.controller"))
+                //要过滤的接口(用这个做版本控制),不过滤是PathSelectors.any()
+                //.paths(Predicates.or(PathSelectors.regex("/api2/.*"))).build()
+                //这里不过滤接口，意思所有接口都显示在swagger上
+                .paths(PathSelectors.regex("/redisson.*"))
+                .build()
+                .apiInfo(apiInfoOther4());
+        //关闭默认返回值
+        //.useDefaultResponseMessages(false);
+    }
+
+
+    private ApiInfo apiInfoOther4() {
+        return new ApiInfoBuilder()
+                .title("Lee LockTestController 模块的")
+                .description("Lee LockTestController 模块的")
+                .contact(new Contact("lbjfish", "https://github.com/lbjfish", "lbjlee@163.com"))
+                .version("LockTestController")
+                .build();
+    }
 }

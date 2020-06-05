@@ -1,11 +1,12 @@
 package com.lee.content.controller;
 
-import com.lee.content.entity.UserDO;
+import com.lee.content.lock.common.DistributedLock;
 import com.lee.content.utils.RedisUtil;
 import com.lee.content.utils.StringRedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 记录下：
@@ -32,6 +34,9 @@ public class RedisTestController {
 
     @Autowired
     private StringRedisUtil stringRedisUtil;
+
+    @Autowired
+    private DistributedLock distributedLock;
 
     @GetMapping("/keys")
     public Set<String> keys(String key){
@@ -168,5 +173,4 @@ public class RedisTestController {
         Object ls = redisUtil.lRemove(key, count, value);
         return ls;
     }
-
 }

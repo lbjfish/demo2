@@ -43,3 +43,6 @@ eureka:
 feign:
   hystrix:
     enabled: true
+
+content:
+  addres: redis://127.0.0.1:7000, redis://127.0.0.1:7001, redis://127.0.0.1:7000
