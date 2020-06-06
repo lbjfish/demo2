@@ -42,17 +42,13 @@ public class RedissonDistributedRedLock implements DistributedRedLock {
         RLock[] rLockArrs = new RLock[address.length];
         for (int i = 0; i < address.length; i++) {
             RLock lock;
-            try{
-                Config config = new Config();
-                config.useSingleServer().setAddress(address[i]);
-                RedissonClient redissonClient = Redisson.create(config);
-                if (isFair) {
-                    lock = redissonClient.getFairLock(CommonConstant.LOCK_KEY_PREFIX + key);
-                }else{
-                    lock = redissonClient.getLock(key);
-                }
-            }catch (Exception e){
-                throw new LockRuntimeException("redLock exception.");
+            Config config = new Config();
+            config.useSingleServer().setAddress(address[i]);
+            RedissonClient redissonClient = Redisson.create(config);
+            if (isFair) {
+                lock = redissonClient.getFairLock(CommonConstant.LOCK_KEY_PREFIX + key);
+            }else{
+                lock = redissonClient.getLock(key);
             }
             rLockArrs[i] = Optional.ofNullable(lock).orElseThrow(() -> new LockRuntimeException("One machine lock is empty"));
         }
@@ -112,9 +108,7 @@ public class RedissonDistributedRedLock implements DistributedRedLock {
         if (lock != null) {
             if (lock instanceof RedissonRedLock) {
                 RedissonRedLock rLock = (RedissonRedLock)lock;
-                if (rLock.isLocked()) {
-                    rLock.unlock();
-                }
+                rLock.unlock();
             } else {
                 throw new LockRuntimeException("unlock RLock fail.");
             }
