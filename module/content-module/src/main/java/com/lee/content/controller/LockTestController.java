@@ -95,7 +95,7 @@ public class LockTestController {
         public MyRunnable(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;
         }
-
+        @SneakyThrows(RuntimeException.class)
         @Override
         public void run() {
             try {
