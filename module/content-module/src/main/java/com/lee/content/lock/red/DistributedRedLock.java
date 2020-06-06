@@ -44,5 +44,5 @@ public interface DistributedRedLock {
      * 释放锁
      * @param lock 锁对象
      */
-    void unlock(Object lock) throws Exception;
+    void unlock(Object lock);
 }

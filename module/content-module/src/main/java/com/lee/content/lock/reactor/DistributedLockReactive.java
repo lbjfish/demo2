@@ -45,5 +45,5 @@ public interface DistributedLockReactive {
      * 释放锁
      * @param lock 锁对象
      */
-    Mono<Void> unlock(Object lock) throws Exception;
+    Mono<Void> unlock(Object lock);
 }

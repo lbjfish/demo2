@@ -61,7 +61,7 @@ public class LockTestController {
     /**
      * 加锁测试
      */
-    private void testLockCount() throws Exception {
+    private void testLockCount() {
         String lockKey = "lock-test";
         RLock rLock = null;
         try {
@@ -96,7 +96,6 @@ public class LockTestController {
             this.countDownLatch = countDownLatch;
         }
 
-        @SneakyThrows
         @Override
         public void run() {
             try {
