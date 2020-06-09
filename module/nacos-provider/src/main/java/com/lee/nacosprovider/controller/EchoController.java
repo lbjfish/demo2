@@ -1,12 +1,16 @@
 package com.lee.nacosprovider.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RefreshScope
+@Slf4j
 public class EchoController {
+
+
     /************************************ 测试 naocs 注册中心 ************************************/
     @GetMapping(value = "/echo/{string}")
     public String echo(@PathVariable String string) {

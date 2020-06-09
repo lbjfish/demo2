@@ -1,2 +1,9 @@
 server:
   port: 10031
+
+#spring-boot-starter-actuator包下用来监控的endpoint，比如访问Nacos http://127.0.0.1:10031/actuator/nacos-discovery
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
