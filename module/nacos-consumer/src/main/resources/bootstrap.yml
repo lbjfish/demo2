@@ -1,7 +1,5 @@
 #注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
 spring:
-  profiles:
-    active: dev
   application:
     name: nacos-consumer
   cloud:

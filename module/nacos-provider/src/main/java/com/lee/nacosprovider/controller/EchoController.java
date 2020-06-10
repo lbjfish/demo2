@@ -34,10 +34,10 @@ public class EchoController {
     private String share;
 
 
-    @Value("${share.config1}")
-    private String shareConfig1;
+//    @Value("${share.config1}")
+//    private String shareConfig1;
 
-    @Value("${share.config2}")
+    @Value("${share.config0}")
     private String shareConfig2;
 
     @RequestMapping("/getValue")
@@ -45,10 +45,10 @@ public class EchoController {
         return share;
     }
 
-    @RequestMapping("/getShare1")
-    public String getShare1() {
-        return shareConfig1;
-    }
+//    @RequestMapping("/getShare1")
+//    public String getShare1() {
+//        return shareConfig1;
+//    }
 
     @RequestMapping("/getShare2")
     public String getShare2() {
@@ -56,16 +56,16 @@ public class EchoController {
     }
 
 
-    @Value("${share.config3}")
-    private String shareConfig3;
+//    @Value("${share.config3}")
+//    private String shareConfig3;
 
-    @Value("${share.config4}")
+    @Value("${share.config}")
     private String shareConfig4;
 
-    @RequestMapping("/getShare3")
-    public String getShare3() {
-        return shareConfig3;
-    }
+//    @RequestMapping("/getShare3")
+//    public String getShare3() {
+//        return shareConfig3;
+//    }
 
     @RequestMapping("/getShare4")
     public String getShare4() {
