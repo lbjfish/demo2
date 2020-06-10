@@ -73,13 +73,7 @@ public class DefendController {
         ConfigService configService = NacosFactory.createConfigService(properties);
         String content = configService.getConfig(dataId, group, 5000);
         log.info("content={}", content);
-        configService.addListener(dataId, group, new PropertiesListener() {
-
-            @Override
-            public void innerReceive(Properties properties) {
-
-            }
-        });
+        configService.addListener(dataId, group, listener);
     }
 
     //地址: http://localhost:10031/removeListener?serverAddr=localhost&dataId=shareconfig1.yml&group=DEFAULT_GROUP
