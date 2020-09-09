@@ -122,6 +122,7 @@ public class LockTestController {
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    RLock lock = null;
                     try {
                         System.err.println("=============线程开启============" + Thread.currentThread().getName());
                         /*
@@ -133,11 +134,12 @@ public class LockTestController {
                          * System.err.println("============================="+
                          * Thread.currentThread().getName());
                          */
-                        RLock lock = distributedLock.tryLock(key, 5L, 10L, TimeUnit.SECONDS); // 尝试获取锁，等待5秒，自己获得锁后一直不解锁则10秒后自动解锁
+                        lock = distributedLock.tryLock(key, 5L, 10L, TimeUnit.SECONDS); // 尝试获取锁，等待5秒，自己获得锁后一直不解锁则10秒后自动解锁
+                        //lock = distributedLock.lock("lock-test",5, TimeUnit.SECONDS);
                         System.out.println("线程:" + Thread.currentThread().getName() + ",获取到了锁");
                         Thread.sleep(2000); // 获得锁之后可以进行相应的处理
                         System.err.println("======获得锁后进行相应的操作======" + Thread.currentThread().getName());
-                        //distributedLock.unlock(lock);
+                        distributedLock.unlock(lock);
                         System.err.println("线程:" + Thread.currentThread().getName() + "解锁了");
                     } catch (Exception e) {
                         e.printStackTrace();
