@@ -1,6 +1,6 @@
 package com.lee.feignweb.controller.feign;
 
-import com.lee.feignweb.client.ContentClient;
+import com.lee.feignweb.client.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

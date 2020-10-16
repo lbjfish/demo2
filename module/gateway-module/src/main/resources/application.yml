@@ -1,20 +1,18 @@
 #Eureka-client 启动端口
 server:
-  port: 10026
+  port: 10027
   #指定访问项目路径的项目名(不加访问路径是：http://localhost:10024/test/hello)
-  servlet:
-    context-path: /gateway #奇怪：引入gateway之后，配置好像这个路径不起作用
+#  servlet:
+#    context-path: /gateway #奇怪：引入gateway之后，配置好像这个路径不起作用
 
 
-# hystrix 信号量隔离，3秒后自动超时（为啥我配了这个貌似没反应，链接地址：https://blog.csdn.net/zhuyu19911016520/article/details/86499528）
-hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 3000
 
 #注册中心 服务名称（eureka-server没意义，eureka-client中很有用）
 spring:
   redis:
-    host: 192.168.1.179
+    host: 127.0.0.1
     port: 6379
-    password: Mogu07550831..
+#    password: Mogu07550831..
   application:
     name: gateway-module-lbj
   #id标签配置的是router的id，每个router都需要一个唯一的id，
@@ -30,7 +28,7 @@ spring:
         - id: path_route
           uri: https://new.qq.com
           predicates:
-            - Path=/ch/edu # 请求地址携带zzzgd的,则转发
+            - Path=/ch/** # 请求地址携带zzzgd的,则转发
         - id: header_route
           uri: http://example.org
           predicates:
@@ -68,9 +66,9 @@ spring:
         - id: rewritepath_route
           uri: https://blog.csdn.net
           predicates:
-            - Path=/foo/**
-          filters:
-            - RewritePath=/foo/(?<segment>.*), /$\{segment}
+            - Path=/zollty/**
+#          filters:
+#            - RewritePath=/foo/(?<segment>.*), /$\{segment}
         - id: query_route
           uri: http://httpbin.org:80/get
           predicates:
@@ -97,14 +95,19 @@ spring:
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity: 5
-                key-resolver: "#{@userKeyResolver}"
+                redis-rate-limiter.burstCapacity: 1
+                key-resolver: "#{@ipKeyResolver}"
         #加入熔断降级
+            - StripPrefix=1
             - name: Hystrix
               args:
                 name: fallbackcmd
-                fallbackUri: 'forward:/defaultfallback'
-            - StripPrefix=1
+                fallbackUri: forward:/defaultfallback
+      default-filters:
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: forward:/defaultfallback
 
 #eureka-client 配置
 eureka:
@@ -120,6 +123,17 @@ eureka:
 
 #不配置这个也行（不配置就默认超时时间，好像2秒左右，忘记了）
 #ribbon的超时时间(配置的原因是我打断点每次到被调用的接口里的时候就报错（Read timed out），就是因为feign中集成的ribbon默认超时时间太短)
-ribbon:
-  ReadTimeout: 50000
-  ConnectTimeout: 50000
+#ribbon:
+#  ReadTimeout: 50000
+#  ConnectTimeout: 50000
+
+
+# hystrix 信号量隔离，3秒后自动超时
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 300

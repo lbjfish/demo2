@@ -1,6 +1,8 @@
 package com.lee.gateway;
 
-import com.lee.gateway.filter.TokenFilter;
+import com.lee.gateway.filter.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -22,6 +24,8 @@ import reactor.core.publisher.Mono;
 @SpringBootApplication
 @RestController
 public class GatewayApplication {
+    private static final Logger logger = LoggerFactory.getLogger(GatewayApplication.class);
+
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
@@ -49,15 +53,21 @@ public class GatewayApplication {
 
     /***************************现在3个Bean可以放到一个类里，带@Configuration的***************************/
     //IP限流
-    //@Bean
+    @Bean
     public KeyResolver ipKeyResolver() {
-        return exchange -> Mono.just(exchange.getRequest().getRemoteAddress().getHostName());
+        return exchange -> {
+            String dsa = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+            return Mono.just(dsa);
+        };
     }
 
     //用户限流
-    @Bean
+    //@Bean
     KeyResolver userKeyResolver() {
-        return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("userId"));
+        return exchange -> {
+            String ds = exchange.getRequest().getQueryParams().getFirst("userId");
+            return Mono.justOrEmpty(ds);
+        };
     }
 
     //接口限流
