@@ -57,7 +57,7 @@ public class VersionIsolationRule extends RoundRobinRule {
             //只取无版本号的实例
             targetList = upList.stream().filter(
                     server -> {
-                        String metadataVersion = ((NacosServer) server).getMetadata().get("versio");
+                        String metadataVersion = ((NacosServer) server).getMetadata().get("version");
                         return StringUtils.isEmpty(metadataVersion);
                     }
             ).collect(Collectors.toList());
